@@ -1,8 +1,16 @@
-const { Joi } = require('celebrate');
+const { Joi, CelebrateError } = require('celebrate');
+const validator = require('validator');
 
 const {
-  string, empty, min, max, required, emailMessage, excess, alphanum, length,
+  string, empty, min, max, required, emailMessage, excess, alphanum, length, uri,
 } = require('../../libs/joiMessages');
+
+const uriCustomScheme = (value) => {
+  if (!validator.isURL(value)) {
+    throw new CelebrateError(uri);
+  }
+  return value;
+};
 
 module.exports.email = Joi
   .string()
@@ -130,54 +138,47 @@ module.exports.description = Joi
 
 module.exports.image = Joi
   .string()
-  .min(2)
+  .custom(uriCustomScheme)
   .messages({
     'string.base': string,
     'string.empty': empty,
-    'string.min': min,
-    'string.max': max,
+    'any.custom': uri,
   });
 
 module.exports.trailer = Joi
   .string()
-  .min(2)
+  .custom(uriCustomScheme)
   .messages({
     'string.base': string,
     'string.empty': empty,
-    'string.min': min,
-    'string.max': max,
+    'any.custom': uri,
   });
 
 module.exports.thumbnail = Joi
   .string()
-  .min(2)
+  .custom(uriCustomScheme)
   .messages({
     'string.base': string,
     'string.empty': empty,
-    'string.min': min,
-    'string.max': max,
+    'any.custom': uri,
   });
 
 module.exports.nameRU = Joi
   .string()
   .min(2)
-  .max(30)
   .messages({
     'string.base': string,
     'string.empty': empty,
     'string.min': min,
-    'string.max': max,
   });
 
 module.exports.nameEN = Joi
   .string()
   .min(2)
-  .max(30)
   .messages({
     'string.base': string,
     'string.empty': empty,
     'string.min': min,
-    'string.max': max,
   });
 
 module.exports.excessObjects = {

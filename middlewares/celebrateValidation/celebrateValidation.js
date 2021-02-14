@@ -1,6 +1,6 @@
 const { celebrate, Joi } = require('celebrate');
 const {
-  email, password, name, _id, id, excessObjects, country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN,
+  email, password, name, _id, excessObjects, country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN,
 } = require('./celebrateParametres');
 
 //
