@@ -4,6 +4,7 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/400_BadRequestError');
 const NotFoundError = require('../errors/404_NotFoundError');
 const ConflictError = require('../errors/409_ConflictError');
+const { SUCCESS, CLIENT_ERROR } = require('../libs/statusMessages');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -11,7 +12,7 @@ module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!email || !password) {
-    throw new BadRequestError({ message: 'Неправильная почта или пароль' });
+    throw new BadRequestError({ message: CLIENT_ERROR.AUTHENTICATION });
   }
 
   bcrypt.hash(password, 10)
@@ -20,7 +21,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.name === 'MongoError' && err.code === 11000) {
-        throw new ConflictError({ message: 'Пользователь с таким email уже зарегистрирован' });
+        throw new ConflictError({ message: CLIENT_ERROR.CONFLICT });
       } else next(err);
     })
     .then((user) => res.status(201).send({
@@ -42,7 +43,8 @@ module.exports.login = (req, res, next) => {
           NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
           { expiresIn: '7d' },
         ),
-      });
+      })
+        .send({ message: SUCCESS.AUTHORIZATION });
     })
     .catch(next);
 };
@@ -55,11 +57,11 @@ module.exports.getAllUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id === 'me' ? req.user : req.user._id)
-    .orFail(new NotFoundError({ message: 'Не существует данного id' }))
+    .orFail(new NotFoundError({ message: CLIENT_ERROR.USER_NOT_FOUND }))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        throw new BadRequestError({ message: `Пользователь c айди ${req.user._id} не найден` });
+        throw new BadRequestError({ message: CLIENT_ERROR.USER_NOT_FOUND });
       }
       throw err;
     })
@@ -67,10 +69,10 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { name } = req.body;
+  const { name, email } = req.body;
 
   User.findByIdAndUpdate(req.user._id,
-    { name },
+    { name, email },
     { new: true, runValidators: true, upsert: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {

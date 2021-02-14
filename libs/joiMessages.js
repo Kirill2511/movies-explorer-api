@@ -1,5 +1,6 @@
 module.exports = {
   string: '{#label} должен быть строкой',
+  number: '{#label} должен быть числом',
   required: 'поле {#label} обязательное',
   empty: 'поле {#label} не может быть пустым',
   min: 'минимальное количество символов в поле {#label}: {#limit}',

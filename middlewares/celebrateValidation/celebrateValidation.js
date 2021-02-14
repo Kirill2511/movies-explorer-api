@@ -1,6 +1,21 @@
 const { celebrate, Joi } = require('celebrate');
 const {
-  email, password, name, _id, excessObjects, country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN,
+  email,
+  password,
+  name,
+  _id,
+  excessObjects,
+  country,
+  director,
+  duration,
+  year,
+  description,
+  image,
+  trailer,
+  thumbnail,
+  movieId,
+  nameRU,
+  nameEN,
 } = require('./celebrateParametres');
 
 //
@@ -18,7 +33,17 @@ module.exports.validateLogin = celebrate({
 
 module.exports.validateMovie = celebrate({
   body: Joi.object().keys({
-    country, director, duration, year, description, image, trailer, thumbnail, nameRU, nameEN,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailer,
+    thumbnail,
+    movieId,
+    nameRU,
+    nameEN,
   })
     .messages(excessObjects),
 });
@@ -34,6 +59,6 @@ module.exports.validateMovieId = celebrate({
 });
 
 module.exports.validateUserUpdate = celebrate({
-  body: Joi.object().keys({ name })
+  body: Joi.object().keys({ name, email })
     .messages(excessObjects),
 });
