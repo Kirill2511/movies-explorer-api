@@ -12,14 +12,13 @@ const { errors } = require('celebrate');
 const { auth } = require('./middlewares/auth');
 const { limit } = require('./middlewares/expressRateLimit');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const { validateRegister, validateLogin } = require('./middlewares/celebrateValidation/celebrateValidation');
+const errorHandler = require('./middlewares/errorHandler');
 
 const NotFoundError = require('./errors/404_NotFoundError');
 
+const authRouter = require('./routes/auth.js');
 const usersRouter = require('./routes/users.js');
 const moviesRouter = require('./routes/movie.js');
-
-const { login, createUser } = require('./controllers/users');
 
 const app = express();
 const { PORT = 3000 } = process.env;
@@ -45,9 +44,7 @@ app.use(limit);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post('/signin', validateLogin, login);
-app.post('/signup', validateRegister, createUser);
-
+app.use('/', authRouter);
 app.use('/users', auth, usersRouter);
 app.use('/movies', auth, moviesRouter);
 
@@ -56,17 +53,8 @@ app.use('/*', () => {
 });
 
 app.use(errorLogger);
-
 app.use(errors());
-
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send(err.message);
-  } else {
-    res.status(500).send({ message: 'Что-то пошло не так.' });
-  }
-  if (next) next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Приложение запущено, порт ${PORT}`);

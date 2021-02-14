@@ -54,12 +54,12 @@ module.exports.getAllUsers = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params._id === 'me' ? req.user : req.params._id)
+  User.findById(req.user._id === 'me' ? req.user : req.user._id)
     .orFail(new NotFoundError({ message: 'Не существует данного id' }))
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        throw new BadRequestError({ message: `Пользователь c айди ${req.params._id} не найден` });
+        throw new BadRequestError({ message: `Пользователь c айди ${req.user._id} не найден` });
       }
       throw err;
     })
@@ -72,7 +72,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id,
     { name },
     { new: true, runValidators: true, upsert: true })
-    .then((user) => res.send(user))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof NotFoundError) {
         throw err;

@@ -73,6 +73,113 @@ module.exports.movieId = Joi
     'string.length': length,
   });
 
+module.exports.country = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.director = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.duration = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.year = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.description = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.image = Joi
+  .string()
+  .min(2)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.trailer = Joi
+  .string()
+  .min(2)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.thumbnail = Joi
+  .string()
+  .min(2)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.nameRU = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
+module.exports.nameEN = Joi
+  .string()
+  .min(2)
+  .max(30)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'string.max': max,
+  });
+
 module.exports.excessObjects = {
   'object.unknown': excess,
 };
