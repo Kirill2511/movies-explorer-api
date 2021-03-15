@@ -74,7 +74,7 @@ module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id,
     { name, email },
     { new: true, runValidators: true, upsert: true })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({ data: { name: user.name, email: user.email } }))
     .catch((err) => {
       if (err instanceof NotFoundError) {
         throw err;
