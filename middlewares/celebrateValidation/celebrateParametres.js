@@ -14,13 +14,11 @@ const uriCustomScheme = (value) => {
 
 module.exports.email = Joi
   .string()
-  .required()
   .email()
   .messages({
     'string.base': string,
     'string.empty': empty,
     'string.email': emailMessage,
-    'any.required': required,
   });
 
 module.exports.password = Joi
