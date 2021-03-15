@@ -11,11 +11,15 @@ const {
   year,
   description,
   image,
-  trailer,
-  thumbnail,
-  movieId,
+  trailerLink,
+  id,
   nameRU,
   nameEN,
+  movieId,
+  // eslint-disable-next-line camelcase
+  updated_at,
+  // eslint-disable-next-line camelcase
+  created_at,
 } = require('./celebrateParametres');
 
 //
@@ -39,11 +43,12 @@ module.exports.validateMovie = celebrate({
     year,
     description,
     image,
-    trailer,
-    thumbnail,
-    movieId,
+    trailerLink,
+    id,
     nameRU,
     nameEN,
+    updated_at,
+    created_at,
   })
     .messages(excessObjects),
 });
@@ -54,7 +59,7 @@ module.exports.validateId = celebrate({
 });
 
 module.exports.validateMovieId = celebrate({
-  params: Joi.object().keys({ _id })
+  params: Joi.object().keys({ movieId })
     .messages(excessObjects),
 });
 

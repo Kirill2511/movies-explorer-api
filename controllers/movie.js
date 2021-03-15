@@ -6,49 +6,51 @@ const ForbiddenError = require('../errors/403_ForbiddenError');
 const { SUCCESS, CLIENT_ERROR } = require('../libs/statusMessages');
 
 module.exports.getMovies = (req, res, next) => {
-  const owner = req.user._id;
-  Movie.find({ owner })
-    .orFail(new NotFoundError({ message: CLIENT_ERROR.MOVIE_NOT_FOUND }))
-    .then((movies) => res.status(200).send(movies))
+  Movie.find({ owner: req.user._id })
+    .then((movies) => {
+      if (!movies) {
+        throw new NotFoundError({ message: CLIENT_ERROR.MOVIE_NOT_FOUND });
+      }
+      res.send({ data: movies });
+    })
+    .catch((error) => {
+      next(error);
+    })
     .catch(next);
 };
 
 module.exports.createMovie = (req, res, next) => {
-  const {
-    country, director, duration, year, description, image, trailer, thumbnail, movieId, nameRU,
-    nameEN,
-  } = req.body;
-
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailer,
-    thumbnail,
-    movieId,
-    nameRU,
-    nameEN,
-    owner: req.user._id,
-  })
-    .then((movie) => res.send(movie))
-    .catch(() => {
-      throw new BadRequestError({ message: CLIENT_ERROR.MOVIE_NOT_FILLED });
+  const newMovie = req.body;
+  newMovie.owner = req.user._id;
+  Movie.create(newMovie)
+    .then((movie) => res.send({ data: movie }))
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        throw new BadRequestError(error.message);
+      } else {
+        next(error);
+      }
     })
     .catch(next);
 };
 
 module.exports.deleteMovie = (req, res, next) => {
-  Movie.findById(req.params._id)
-    .orFail(new NotFoundError({ message: CLIENT_ERROR.MOVIE_NOT_FOUND }))
+  Movie.findById(req.params.movieId).select('+owner')
     .then((movie) => {
-      if (movie.owner.toString() !== req.user._id) {
-        throw new ForbiddenError({ message: CLIENT_ERROR.FORBIDDEN });
+      if (!movie) {
+        throw new NotFoundError({ message: CLIENT_ERROR.MOVIE_NOT_FOUND });
+      } else if (movie.owner.toString() === req.user._id) {
+        Movie.findByIdAndRemove(req.params.movieId)
+          .then((movieForDelete) => {
+            if (!movieForDelete) {
+              throw new NotFoundError({ message: CLIENT_ERROR.MOVIE_NOT_FOUND });
+            }
+            res.send({ data: movieForDelete });
+          })
+          .catch(next);
+      } else {
+        throw new ForbiddenError({ message: SUCCESS.REMOVE_MOVIE });
       }
-      movie.remove()
-        .then(() => res.status(200).send({ message: SUCCESS.REMOVE_MOVIE }));
     })
     .catch(next);
 };
