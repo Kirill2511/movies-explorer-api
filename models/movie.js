@@ -1,73 +1,70 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-
-const { requiredTrue } = require('../libs/validationParameters');
 
 const movieSchema = new mongoose.Schema({
-  nameRU: {
+  created_at: {
     type: String,
-    required: requiredTrue,
+    required: true,
   },
-  nameEN: {
+  updated_at: {
     type: String,
-    required: requiredTrue,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
+  director: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  year: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
+  image: {
+    type: Object,
+    required: true,
+  },
+  trailerLink: {
+    type: String,
+    required: true,
+    validate: {
+      validator(url) {
+        const regExp = /https?:\/\/w{0,3}[a-z0-9-._~:/?#[\]@!$&'()*+,;=]*#?/gi;
+        return regExp.test(url);
+      },
+      message: 'not url.',
+    },
+  },
+  id: {
+    type: Number,
+    required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: requiredTrue,
+    required: true,
+    select: false,
   },
-  thumbnail: {
+  nameRU: {
     type: String,
-    required: requiredTrue,
-    validate: {
-      validator(url) {
-        return validator.isURL(url);
-      },
-    },
+    required: true,
   },
-  trailer: {
+  nameEN: {
     type: String,
-    required: requiredTrue,
-    validate: {
-      validator(url) {
-        return validator.isURL(url);
-      },
-    },
+    required: true,
   },
-  image: {
-    type: String,
-    required: requiredTrue,
-    validate: {
-      validator(url) {
-        return validator.isURL(url);
-      },
-    },
-  },
-  description: {
-    type: String,
-    required: requiredTrue,
-  },
-  year: {
-    type: String,
-    required: requiredTrue,
-  },
-  duration: {
-    type: Number,
-    required: requiredTrue,
-  },
-  director: {
-    type: String,
-    required: requiredTrue,
-  },
-  country: {
-    type: String,
-    required: requiredTrue,
-  },
-  movieId: {
-    type: String,
-    required: requiredTrue,
-  },
-});
+}, { versionKey: false });
 
 module.exports = mongoose.model('movie', movieSchema);

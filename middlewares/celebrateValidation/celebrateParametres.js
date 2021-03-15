@@ -26,7 +26,7 @@ module.exports.email = Joi
 module.exports.password = Joi
   .string()
   .required()
-  .min(8)
+  .min(6)
   .messages({
     'string.base': string,
     'string.empty': empty,
@@ -57,7 +57,7 @@ module.exports._id = Joi
     'string.length': length,
   });
 
-module.exports.movieId = Joi
+module.exports.id = Joi
   .number()
   .required()
   .messages({
@@ -69,8 +69,6 @@ module.exports.movieId = Joi
 module.exports.country = Joi
   .string()
   .required()
-  .min(2)
-  .max(30)
   .messages({
     'string.base': string,
     'string.empty': empty,
@@ -121,8 +119,6 @@ module.exports.year = Joi
 module.exports.description = Joi
   .string()
   .required()
-  .min(2)
-  .max(30)
   .messages({
     'string.base': string,
     'string.empty': empty,
@@ -132,28 +128,13 @@ module.exports.description = Joi
   });
 
 module.exports.image = Joi
-  .string()
   .required()
-  .custom(uriCustomScheme)
   .messages({
-    'string.base': string,
     'string.empty': empty,
-    'any.custom': uri,
     'any.required': required,
   });
 
-module.exports.trailer = Joi
-  .string()
-  .required()
-  .custom(uriCustomScheme)
-  .messages({
-    'string.base': string,
-    'string.empty': empty,
-    'any.custom': uri,
-    'any.required': required,
-  });
-
-module.exports.thumbnail = Joi
+module.exports.trailerLink = Joi
   .string()
   .required()
   .custom(uriCustomScheme)
@@ -183,6 +164,38 @@ module.exports.nameEN = Joi
     'string.base': string,
     'string.empty': empty,
     'string.min': min,
+    'any.required': required,
+  });
+
+module.exports.updated_at = Joi
+  .string()
+  .required()
+  .min(2)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'any.required': required,
+  });
+
+module.exports.created_at = Joi
+  .string()
+  .required()
+  .min(2)
+  .messages({
+    'string.base': string,
+    'string.empty': empty,
+    'string.min': min,
+    'any.required': required,
+  });
+
+module.exports.movieId = Joi
+  .string()
+  .hex()
+  .length(24)
+  .messages({
+    'string.base': string,
+    'string.length': length,
     'any.required': required,
   });
 
