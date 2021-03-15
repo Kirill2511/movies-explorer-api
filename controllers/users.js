@@ -69,10 +69,9 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res, next) => {
-  const { name, email } = req.body;
+  const updatedUserData = req.body;
 
-  User.findByIdAndUpdate(req.user._id,
-    { name, email },
+  User.findByIdAndUpdate(req.user._id, updatedUserData,
     { new: true, runValidators: true, upsert: true })
     .then((user) => res.send({ data: { name: user.name, email: user.email } }))
     .catch((err) => {
